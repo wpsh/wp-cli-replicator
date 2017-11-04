@@ -237,6 +237,8 @@ class WP_Json_Importer {
 
 			unset( $xml, $import, $posts_done, $meta_value, $meta_unserialized ); // Save memory.
 
+			// $this->db->flush(); // Try mysqli_free_result() and unset things.
+
 		}
 
 		foreach ( $term_ids_by_tax as $taxonomy => $term_ids ) {
