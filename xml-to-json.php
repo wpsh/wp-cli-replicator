@@ -122,8 +122,6 @@ foreach ( $files as $no => $xml_file ) {
 function escape_xml( $xml ) {
 	// Remove all invalid characters per XML spec:
 	// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-	$xml = preg_replace( '/[^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/', ' ', $xml );
-
 	// Escape ampersands in regular attribute values.
 	$xml = preg_replace_callback( '/>([^<]+)<\//', function( $matches ) {
 		if ( false === strpos( $matches[1], ']]>' ) ) {
@@ -134,6 +132,7 @@ function escape_xml( $xml ) {
 		}
 
 		return $matches[0];
+	$xml = preg_replace( '/[^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );
 	}, $xml );
 
 	return $xml;
