@@ -122,7 +122,7 @@ foreach ( $files as $no => $xml_file ) {
 function escape_xml( $xml ) {
 	// Remove all invalid characters per XML spec:
 	// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-	$xml = preg_replace( '/[^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );
+	$xml = preg_replace( '/[^\x9\xA\xB\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );
 
 	// Escape XML entities.
 	// @todo Prevent from touching the CDATA content.
