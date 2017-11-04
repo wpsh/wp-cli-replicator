@@ -2,13 +2,14 @@
 
 class WP_Json_Importer {
 
-	function __construct() {
+	protected $db;
+
+	function __construct( $db ) {
 		// @todo Check if WP is present.
+		$this->db = $db;
 	}
 
 	function import_options( $option_json ) {
-		global $wpdb;
-
 		if ( empty( $option_json ) ) {
 			die( 'Failed to read the options.json file.' );
 		}
@@ -20,13 +21,13 @@ class WP_Json_Importer {
 			if ( 0 === strpos( $option_key, 'theme_mods_' ) ) {
 				$theme_slug = get_option( 'stylesheet' );
 
-				$wpdb->insert( $wpdb->options, [
+				$this->db->insert( $this->db->options, [
 					'option_name' => 'theme_mods_' . $theme_slug,
 					'option_value' => $option_value,
 				] );
 			}
 
-			$wpdb->insert( $wpdb->options, [
+			$this->db->insert( $this->db->options, [
 				'option_name' => $option_key,
 				'option_value' => $option_value,
 			] );
@@ -70,8 +71,6 @@ class WP_Json_Importer {
 	}
 
 	function import_posts( $files ) {
-		global $wpdb;
-
 		if ( empty( $files ) ) {
 			die( 'Failed to find post JSON files.' );
 		}
@@ -94,13 +93,13 @@ class WP_Json_Importer {
 			$json = file_get_contents( $file );
 			$import = json_decode( $json );
 
-			$wpdb->query( 'START TRANSACTION' ); // 100x performance boost.
+			$this->db->query( 'START TRANSACTION' ); // 100x performance boost.
 
 			foreach ( $import->posts as $post ) {
 
 				// @todo Add a flag to disable this.
-				// $post_exists = (int) $wpdb->get_var( $wpdb->prepare(
-				// 	"SELECT COUNT(*) FROM $wpdb->posts WHERE ID = %d",
+				// $post_exists = (int) $this->db->get_var( $this->db->prepare(
+				// 	"SELECT COUNT(*) FROM $this->db->posts WHERE ID = %d",
 				// 	$post->post_id
 				// ) );
 				//
@@ -119,7 +118,7 @@ class WP_Json_Importer {
 				}
 
 				// @todo Bail if post ID already exists.
-				$wpdb->insert( $wpdb->posts, [
+				$this->db->insert( $this->db->posts, [
 					'ID' => $post->post_id,
 					'guid' => $post->guid,
 					'post_title' => $post->title,
@@ -172,7 +171,7 @@ class WP_Json_Importer {
 								continue;
 							}
 
-							$wpdb->insert( $wpdb->term_relationships, [
+							$this->db->insert( $this->db->term_relationships, [
 								'object_id' => $post_id,
 								'term_taxonomy_id' => $term[0]->term_taxonomy_id,
 							] );
@@ -217,7 +216,7 @@ class WP_Json_Importer {
 					}
 				}
 
-				$wpdb->insert( $wpdb->postmeta, [
+				$this->db->insert( $this->db->postmeta, [
 					'post_id' => $postmeta->post_id,
 					'meta_key' => $postmeta->meta_key,
 					'meta_value' => $meta_value,
@@ -226,7 +225,7 @@ class WP_Json_Importer {
 				unset( $postmeta );
 			}
 
-			$wpdb->query( 'COMMIT' );
+			$this->db->query( 'COMMIT' );
 
 			$this->log( sprintf(
 				'Import from %s took %d seconds.',
@@ -251,8 +250,6 @@ class WP_Json_Importer {
 	}
 
 	function import_terms( $terms ) {
-		global $wpdb;
-
 		$term_defaults = [
 			'term_id' => null,
 			'name' => null,
@@ -262,18 +259,18 @@ class WP_Json_Importer {
 			'parent' => 0,
 		];
 
-		$wpdb->query( 'START TRANSACTION' );
+		$this->db->query( 'START TRANSACTION' );
 
 		foreach ( $terms as $term ) {
 			$term = wp_parse_args( $term, $term_defaults );
 
-			$wpdb->insert( $wpdb->terms, [
+			$this->db->insert( $this->db->terms, [
 				'term_id' => $term['term_id'],
 				'name' => $term['name'],
 				'slug' => $term['slug'],
 			] );
 
-			$wpdb->insert( $wpdb->term_taxonomy, [
+			$this->db->insert( $this->db->term_taxonomy, [
 				'term_id' => $term['term_id'],
 				'taxonomy' => $term['taxonomy'],
 				'description' => $term['description'],
@@ -288,14 +285,12 @@ class WP_Json_Importer {
 			) );
 		}
 
-		$wpdb->query( 'COMMIT' );
+		$this->db->query( 'COMMIT' );
 	}
 
 	function import_users( $users ) {
-		global $wpdb;
-
-		//$wpdb->query( "TRUNCATE TABLE $wpdb->users" );
-		//$wpdb->query( "TRUNCATE TABLE $wpdb->usermeta" );
+		//$this->db->query( "TRUNCATE TABLE $this->db->users" );
+		//$this->db->query( "TRUNCATE TABLE $this->db->usermeta" );
 
 		$password = wp_hash_password( 'wordpress' );
 
@@ -308,7 +303,7 @@ class WP_Json_Importer {
 				wp_delete_user( $current_user->ID );
 			}
 
-			$wpdb->insert( $wpdb->users, [
+			$this->db->insert( $this->db->users, [
 				'ID' => $user['author_id'],
 				'user_login' => $user['author_login'],
 				'user_pass' => $password,
