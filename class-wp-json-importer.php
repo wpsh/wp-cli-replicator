@@ -11,7 +11,7 @@ class WP_Json_Importer {
 		$this->db = $db;
 	}
 
-	function import_options( $option_json ) {
+	public function import_options( $option_json ) {
 		if ( empty( $option_json->options ) ) {
 			die( 'Options empty.' );
 		}
@@ -40,7 +40,7 @@ class WP_Json_Importer {
 		flush_rewrite_rules();
 	}
 
-	function get_user_login_id_map() {
+	public function get_user_login_id_map() {
 		$login_user_map = [];
 		$users = get_users();
 
@@ -51,7 +51,7 @@ class WP_Json_Importer {
 		return $login_user_map;
 	}
 
-	function get_image_placeholder_file() {
+	public function get_image_placeholder_file() {
 		$placeholder_url = get_avatar_url(
 			'team-atlas@xwp.co',
 			array(
@@ -72,7 +72,7 @@ class WP_Json_Importer {
 		return $file;
 	}
 
-	function import_posts( $files ) {
+	public function import_posts( $files ) {
 		if ( empty( $files ) ) {
 			die( 'Failed to find post JSON files.' );
 		}
@@ -251,7 +251,7 @@ class WP_Json_Importer {
 		}
 	}
 
-	function import_terms( $terms ) {
+	public function import_terms( $terms ) {
 		$term_defaults = [
 			'term_id' => null,
 			'name' => null,
@@ -290,7 +290,7 @@ class WP_Json_Importer {
 		$this->db->query( 'COMMIT' );
 	}
 
-	function import_users( $users ) {
+	public function import_users( $users ) {
 		//$this->db->query( "TRUNCATE TABLE $this->db->users" );
 		//$this->db->query( "TRUNCATE TABLE $this->db->usermeta" );
 
@@ -325,7 +325,7 @@ class WP_Json_Importer {
 		}
 	}
 
-	protected function log( $message ) {
+	public function log( $message ) {
 		echo $message . "\n";
 	}
 
