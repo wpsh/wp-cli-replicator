@@ -12,8 +12,8 @@ class WP_Json_Importer {
 	}
 
 	function import_options( $option_json ) {
-		if ( empty( $option_json ) ) {
-			die( 'Failed to read the options.json file.' );
+		if ( empty( $option_json->options ) ) {
+			die( 'Options empty.' );
 		}
 
 		foreach ( $option_json->options as $option_key => $option_value ) {
