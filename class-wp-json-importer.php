@@ -4,11 +4,8 @@ class WP_Json_Importer {
 
 	protected $db;
 
-	public function __construct() {
-		global $wpdb; // Not sure why CLI won't pass this as an argument.
-
-		// @todo Check if WP is present.
-		$this->db = $wpdb;
+	public function __construct( $db ) {
+		$this->db = $db;
 	}
 
 	function import_options( $option_json ) {
