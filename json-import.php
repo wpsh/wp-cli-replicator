@@ -1,7 +1,5 @@
 <?php
 
-define( 'WP_MEMORY_LIMIT', -1 );
-
 // @todo This should come from a CLI arg.
 $json_dir = '../import/hb/json';
 
