@@ -125,10 +125,12 @@ function escape_xml( $xml ) {
 	$xml = preg_replace( '/[^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/', ' ', $xml );
 
 	// Escape ampersands in regular attribute values.
-	$xml = preg_replace_callback( '/>(.+?)<\//', function( $matches ) {
-		if ( false === strpos( $matches[1], '<![CDATA' ) ) {
-			// Replace ampersands that don't have the ";" character after atleast 6 chars. Thank you VIP.
-			$matches[0] = preg_replace( '/(&(?![^\s]{0,5};))/', '&amp;', $matches[0] );
+	$xml = preg_replace_callback( '/>([^<]+)<\//', function( $matches ) {
+		if ( false === strpos( $matches[1], ']]>' ) ) {
+			return sprintf(
+				'>%s</',
+				htmlentities( html_entity_decode( $matches[1] ), ENT_QUOTES | ENT_XML1 )
+			);
 		}
 
 		return $matches[0];
