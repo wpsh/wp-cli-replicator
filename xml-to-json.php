@@ -33,6 +33,13 @@ foreach ( $files as $no => $xml_file ) {
 		'term_objects' => [],
 	];
 
+	$filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $xml_file, '.xml' ) );
+
+	if ( file_exists( $filename ) ) {
+		printf( "Skipping %, already exists.\n", basename( $filename ) );
+		continue;
+	}
+
 	printf( "Parsing (%d/%d) %s \n", $no + 1, count( $files ), basename( $xml_file ) );
 
 	$xml = file_get_contents( $xml_file );
@@ -105,8 +112,6 @@ foreach ( $files as $no => $xml_file ) {
 
 		unset( $post, $wp );
 	}
-
-	$filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $xml_file, '.xml' ) );
 
 	file_put_contents( $filename, json_encode( $data ) );
 
