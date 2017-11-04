@@ -1,14 +1,12 @@
 <?php
 
-global $wpdb;
-
 define( 'WP_MEMORY_LIMIT', -1 );
 
 // @todo This should come from a CLI arg.
 $json_dir = '../import/hb/json';
 
 include __DIR__ . '/class-wp-json-importer.php';
-$importer = new WP_Json_Importer( $wpdb );
+$importer = new WP_Json_Importer();
 
 // $users = json_decode( file_get_contents( $json_dir .'/users.json' ) );
 // $importer->import_users( $users );
