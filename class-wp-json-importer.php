@@ -37,6 +37,38 @@ class WP_Json_Importer {
 		flush_rewrite_rules();
 	}
 
+	function get_user_login_id_map() {
+		$login_user_map = [];
+		$users = get_users();
+
+		foreach ( $users as $user ) {
+			$login_user_map[ $user->user_login ] = $user->ID;
+		}
+
+		return $login_user_map;
+	}
+
+	function get_image_placeholder_file() {
+		$placeholder_url = get_avatar_url(
+			'team-atlas@xwp.co',
+			array(
+				'size' => 1000
+			)
+		);
+
+		$file = wp_upload_bits(
+			'placeholder.jpg',
+			null,
+			file_get_contents( $placeholder_url ) // @todo replace with wp_remote_get().
+		);
+
+		if ( empty( $file['file'] ) ) {
+			die( 'Failed to create a placeholder image file.' );
+		}
+
+		return $file;
+	}
+
 	function import_posts( $files ) {
 		global $wpdb;
 
@@ -45,20 +77,8 @@ class WP_Json_Importer {
 		}
 
 		$term_query = new WP_Term_Query();
-
-		$users = get_users();
-		$login_user_map = [];
-		foreach ( $users as $user ) {
-			$login_user_map[ $user->user_login ] = $user->ID;
-		}
-
-		$placeholder_url = get_avatar_url( 'team-atlas@xwp.co', array( 'size' => 1000 ) );
-		$placeholder_file = wp_upload_bits( 'placeholder.jpg', null, file_get_contents( $placeholder_url ) );
-
-		if ( empty( $placeholder_file['file'] ) ) {
-			die( 'Failed to create a placeholder image file.' );
-		}
-
+		$login_user_map = $this->get_user_login_id_map();
+		$placeholder_file = $this->get_image_placeholder_file();
 		$term_ids_by_tax = [];
 
 		foreach ( $files as $file ) {
