@@ -122,20 +122,16 @@ foreach ( $files as $no => $xml_file ) {
 function escape_xml( $xml ) {
 	// Remove all invalid characters per XML spec:
 	// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-	// Escape ampersands in regular attribute values.
-	$xml = preg_replace_callback( '/>([^<]+)<\//', function( $matches ) {
-		if ( false === strpos( $matches[1], ']]>' ) ) {
-			return sprintf(
-				'>%s</',
-				htmlentities( html_entity_decode( $matches[1] ), ENT_QUOTES | ENT_XML1 )
-			);
-		}
-
-		return $matches[0];
 	$xml = preg_replace( '/[^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );
-	}, $xml );
 
-	return $xml;
+	// Escape XML entities.
+	// @todo Prevent from touching the CDATA content.
+	return preg_replace_callback( '/>([^<>]+)<\//', function( $matches ) {
+		return sprintf(
+			'>%s</',
+			htmlentities( html_entity_decode( $matches[1] ), ENT_QUOTES | ENT_XML1 )
+		);
+	}, $xml );
 }
 
 function process_users_terms( $items ) {
