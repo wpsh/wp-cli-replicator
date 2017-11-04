@@ -52,7 +52,7 @@ class WP_Json_Importer {
 			$login_user_map[ $user->user_login ] = $user->ID;
 		}
 
-		$placeholder_url = get_avatar_url( 'hi@kaspars.net', array( 'size' => 1000 ) );
+		$placeholder_url = get_avatar_url( 'team-atlas@xwp.co', array( 'size' => 1000 ) );
 		$placeholder_file = wp_upload_bits( 'placeholder.jpg', null, file_get_contents( $placeholder_url ) );
 
 		if ( empty( $placeholder_file['file'] ) ) {
