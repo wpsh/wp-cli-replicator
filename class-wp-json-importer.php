@@ -2,6 +2,9 @@
 
 class WP_Json_Importer {
 
+	/**
+	 * @var \wpdb Instance of WordPress \wpdb.
+	 */
 	protected $db;
 
 	public function __construct( $db ) {
