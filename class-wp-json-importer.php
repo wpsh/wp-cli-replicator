@@ -231,6 +231,7 @@ class WP_Json_Importer {
 				$taxonomy
 			) );
 
+			// @todo This requires the taxonomy to be registered and post types associated with the taxonomy.
 			// wp_update_term_count_now( $term_ids, $taxonomy );
 		}
 
