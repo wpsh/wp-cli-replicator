@@ -235,10 +235,6 @@ class WP_Json_Importer {
 			// wp_update_term_count_now( $term_ids, $taxonomy );
 		}
 
-		unset( $import, $posts_done, $meta_value, $meta_unserialized, $term_ids_by_tax ); // Save memory.
-
-		// $this->db->flush(); // Try mysqli_free_result() and unset things.
-
 	}
 
 	public function import_terms( $terms ) {
