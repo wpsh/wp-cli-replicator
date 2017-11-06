@@ -6,6 +6,7 @@ Quickly create replicas of large production websites from WordPress eXtended RSS
 ## Requirements
 
 - [WP CLI](http://wp-cli.org)
+- [WP Options Importer](https://wordpress.org/plugins/options-importer/) for creating the options export JSON file on the source website.
 
 
 ## Instructions
