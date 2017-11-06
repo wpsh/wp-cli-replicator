@@ -5,7 +5,7 @@ Quickly create replicas of large production websites from WordPress eXtended RSS
 
 ## Requirements
 
-- WP CLI
+- [WP CLI](http://wp-cli.org)
 
 
 ## Instructions
@@ -14,13 +14,13 @@ Please note that this implementation relies on writing directly to the WP databa
 
 1. Parse the exported WXR files into JSON files for site users, terms and posts:
 
-		$ php xml-to-json.php path/to/wxr/files
+	   $ php xml-to-json.php path/to/wxr/files
 
 	All WXR files `path/to/wxr/files/*.xml` are parsed and stored in `path/to/wxr/files/json` -- `users.json`, `terms.json` and `posts-*.json`.
 
 2. Run the actual import:
 
-		$ export WP_JSON_DIR="path/to/wxr/files/json" 
-		$ ./import.sh http://example.local
+	   $ export WP_JSON_DIR="path/to/wxr/files/json" 
+	   $ ./import.sh http://example.local
 
-Where `http://example.local` is the URL of the site where the data should be imported.
+	where `http://example.local` is the URL of the site where the data should be imported.
