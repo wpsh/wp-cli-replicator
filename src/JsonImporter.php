@@ -309,7 +309,6 @@ class JsonImporter {
 	public function import_users( $users ) {
 		// $this->db->query( "TRUNCATE TABLE $this->db->users" );
 		// $this->db->query( "TRUNCATE TABLE $this->db->usermeta" );
-		$password = wp_hash_password( 'WordPress' );
 
 		foreach ( $users as $user ) {
 			$user = (array) $user;
@@ -324,7 +323,7 @@ class JsonImporter {
 				$this->db->users, [
 					'ID' => $user['author_id'],
 					'user_login' => $user['author_login'],
-					'user_pass' => $password,
+					'user_pass' => wp_hash_password( wp_generate_password() ),
 					'user_nicename' => $user['author_login'],
 					'user_email' => $user['author_email'],
 					'display_name' => $user['author_display_name'],

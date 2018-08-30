@@ -4,7 +4,9 @@
 
 ## Usage
 
-Please note that this implementation relies on writing directly to the WP database so both post and term tables should be empty. All existing users with the same login name will be deleted and new users created with password `wordpress`.
+- This command relies on writing directly to the WP database via WP DB API so both post and term tables should be empty.
+
+- All existing users with the same login name will be deleted and new users created with a random password because WordPress export doesn't include the passwords. All users will need to reset their passwords. Use `wp user update USERNAME --user_pass="YOURNEWPASSWORD"` to update a password for a specific user.
 
 
 ### Export Content
