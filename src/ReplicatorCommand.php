@@ -183,7 +183,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 		$files = glob( rtrim( $posts_dir, '/' ) . '/posts-*.json' );
 
-		if ( empty( $files ) ) {
+		if ( empty( $files ) ) {
 			return $this->error( sprintf(
 				'Failed to find post json files at %s.',
 				$posts_dir
