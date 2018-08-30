@@ -1,0 +1,23 @@
+{
+  "name": "wpsh/wp-cli-replicator",
+  "type": "wp-cli-package",
+  "require": {
+    "wp-cli/wp-cli": "^2.0"
+  },
+  "authors": [
+    {
+      "name": "Kaspars Dambis",
+      "email": "hi@kaspars.net"
+    }
+  ],
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.3",
+    "phpcompatibility/php-compatibility": "^8.2",
+    "wp-coding-standards/wpcs": "^1.0"
+  },
+  "scripts": {
+    "phpcs": [
+      "vendor/bin/phpcs src"
+    ]
+  }
+}
