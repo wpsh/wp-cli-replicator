@@ -2,12 +2,10 @@
 
 **Quickly create replicas of large production websites from WordPress eXtended RSS (WXR) export files.**
 
+This command relies on writing directly to the WP database via WP DB API so both post and term tables should be empty.
+
+
 ## Usage
-
-- This command relies on writing directly to the WP database via WP DB API so both post and term tables should be empty.
-
-- All existing users with the same login name will be deleted and new users created with a random password because WordPress export doesn't include the passwords. All users will need to reset their passwords. Use `wp user update USERNAME --user_pass="YOURNEWPASSWORD"` to update a password for a specific user.
-
 
 ### Export Content
 
@@ -48,6 +46,8 @@ Please note that you may need to specify `--url` for all commands if you're runn
 	   wp replicator import-users "path/to/users.json"
 
    where `path/to/users.json` is the path the user list generated from the XML export.
+
+   All existing users with the same login name will be deleted and new users created with a random password because WordPress export doesn't include the passwords. All users will need to reset their passwords. Use `wp user update USERNAME --user_pass="YOURNEWPASSWORD"` to update a password for a specific user.
 
 4. Import taxonomies and terms:
 
