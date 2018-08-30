@@ -2,19 +2,12 @@
 
 Quickly create replicas of large production websites from WordPress eXtended RSS (WXR) export files.
 
-
-## Requirements
-
-- [WP CLI](http://wp-cli.org)
-- [WP Options Importer](https://wordpress.org/plugins/options-importer/) for creating the options export JSON file on the source website.
-
-
-## Instructions
+## Usage
 
 Please note that this implementation relies on writing directly to the WP database so both post and term tables should be empty. All existing users with the same login name will be deleted and new users created with password `wordpress`.
 
 
-## Export Content
+### Export Content
 
 Export content from the source site:
 
@@ -23,7 +16,7 @@ Export content from the source site:
 2. Export the site options using the [WP Options Importer](https://wordpress.org/plugins/options-importer/) plugin. The output should be a single `options.json` file.
 
 
-## Prepare Import
+### Prepare Import
 
 1. Parse the exported WXR files into JSON files for site users, terms and posts:
 
@@ -34,7 +27,7 @@ Export content from the source site:
    All XML files `path/to/wxr/files/*.xml` are parsed and stored in the `path/to/wxr/directory/json` directory -- `users.json`, `terms.json` and `posts-*.json`.
 
 
-## Import Content
+### Import Content
 
 Please note that you may need to specify `--url` for all commands if you're running WordPress multisite.
 
