@@ -11,6 +11,22 @@ use WP_CLI_Command;
 class ReplicatorCommand extends WP_CLI_Command {
 
 	/**
+	 * Define our importer instance.
+	 *
+	 * @var JsonImporter
+	 */
+	protected $importer;
+
+	/**
+	 * Init the command.
+	 */
+	public function __construct() {
+		global $wpdb;
+
+		$this->importer = new JsonImporter( $wpdb );
+	}
+
+	/**
 	 * Convert WXR export XML files into JSON files.
 	 *
 	 * ## OPTIONS
@@ -52,9 +68,24 @@ class ReplicatorCommand extends WP_CLI_Command {
 		$this->to_json_file( $terms_filename, $terms );
 
 		foreach ( $files as $file ) {
-			$posts = $parser->parse( $file );
 			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
+
+			if ( file_exists( $posts_filename ) ) {
+				$this->warn( sprintf(
+					'Skipping %s because file already exists.',
+					$posts_filename
+				) );
+
+				continue;
+			}
+
+			$posts = $parser->parse( $file );
 			$this->to_json_file( $posts_filename, $posts );
+
+			$this->success( sprintf(
+				'Parsed %s.',
+				$posts_filename
+			) );
 		}
 	}
 
@@ -69,13 +100,9 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * @subcommand import-options
 	 */
 	public function import_options( $args, $assoc_args ) {
-		global $wpdb;
-
 		list( $options_file ) = $args;
 
-		$importer = new JsonImporter( $wpdb );
-
-		return $importer->import_options( $this->from_json_file( $options_file ) );
+		return $this->importer->import_options( $this->from_json_file( $options_file ) );
 	}
 
 	/**
@@ -89,13 +116,9 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * @subcommand import-users
 	 */
 	public function import_users( $args, $assoc_args ) {
-		global $wpdb;
-
 		list( $users_file ) = $args;
 
-		$importer = new JsonImporter( $wpdb );
-
-		return $importer->import_users( $this->from_json_file( $users_file ) );
+		return $this->importer->import_users( $this->from_json_file( $users_file ) );
 	}
 
 	/**
@@ -109,13 +132,9 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * @subcommand import-terms
 	 */
 	public function import_terms( $args, $assoc_args ) {
-		global $wpdb;
-
 		list( $terms_file ) = $args;
 
-		$importer = new JsonImporter( $wpdb );
-
-		return $importer->import_terms( $this->from_json_file( $terms_file ) );
+		return $this->importer->import_terms( $this->from_json_file( $terms_file ) );
 	}
 
 	/**
@@ -129,8 +148,6 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * @subcommand import-posts
 	 */
 	public function import_posts( $args, $assoc_args ) {
-		global $wpdb;
-
 		list( $posts_dir ) = $args;
 
 		$files = glob( rtrim( $posts_dir, '/' ) . '/posts-*.json' );
@@ -142,10 +159,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 			) );
 		}
 
-		$importer = new JsonImporter( $wpdb );
-
 		foreach ( $files as $file ) {
-			$importer->import_post( $this->from_json_file( $file ) );
+			$this->importer->import_post( $this->from_json_file( $file ) );
 		}
 	}
 
@@ -166,6 +181,18 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 	protected function error( $message ) {
 		return WP_CLI::error( $message );
+	}
+
+	protected function log( $message ) {
+		return WP_CLI::log( $message );
+	}
+
+	protected function warn( $message ) {
+		return WP_CLI::warning( $message );
+	}
+
+	protected function success( $message ) {
+		return WP_CLI::success( $message );
 	}
 
 }
