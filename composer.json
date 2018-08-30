@@ -14,7 +14,9 @@
     "psr-4": {
       "WPSH_Replicator\\": "src/"
     },
-    "files": [ "command.php" ]
+    "files": [
+      "command.php"
+    ]
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.3",
