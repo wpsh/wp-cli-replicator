@@ -39,6 +39,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * : Override any existing files.
 	 *
 	 * @subcommand wxr-to-json
+	 * @alias convert
 	 */
 	public function wxr_to_json( $args, $assoc_args ) {
 		list( $xml_dir ) = $args;

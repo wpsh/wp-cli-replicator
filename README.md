@@ -20,7 +20,7 @@ Export content from the source site:
 
 1. Parse the exported WXR files into JSON files for site users, terms and posts:
 
-	   wp replicator wxr-to-json path/to/wxr/directory
+	   wp replicator convert path/to/wxr/directory
 
    where `path/to/wxr/directory` is the path to the directory with all the XML files.
 
