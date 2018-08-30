@@ -57,7 +57,9 @@ Please note that you may need to specify `--url` for all commands if you're runn
 
 5. Import posts:
 
-	   wp replicator import-posts "path/to/posts-*.json"
+	   wp replicator import-posts "path/to/json"
+
+   where `path/to/json` is the path to the directory with all `post-*.json` files.
 
 
 ## Credits
