@@ -52,6 +52,11 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 	}
 
+	/**
+	 * Import options.
+	 *
+	 * @subcommand import-options
+	 */
 	public function import_options( $args, $assoc_args ) {
 		global $wpdb;
 
@@ -66,9 +71,15 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 
 		$importer = new JsonImporter( $wpdb );
+
 		return $importer->import_options( $this->from_json_file( $options_file ) );
 	}
 
+	/**
+	 * Import users.
+	 *
+	 * @subcommand import-users
+	 */
 	public function import_users( $args, $assoc_args ) {
 		global $wpdb;
 
@@ -83,9 +94,15 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 
 		$importer = new JsonImporter( $wpdb );
+
 		return $importer->import_users( $this->from_json_file( $users_file ) );
 	}
 
+	/**
+	 * Import terms.
+	 *
+	 * @subcommand import-terms
+	 */
 	public function import_terms( $args, $assoc_args ) {
 		global $wpdb;
 
@@ -100,7 +117,29 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 
 		$importer = new JsonImporter( $wpdb );
+
 		return $importer->import_terms( $this->from_json_file( $terms_file ) );
+	}
+
+	/**
+	 * Import posts.
+	 *
+	 * @subcommand import-posts
+	 */
+	public function import_posts( $args, $assoc_args ) {
+		global $wpdb;
+
+		if ( ! isset( $args[0] ) ) {
+			die( 'Please specify path to posts.' );
+		}
+
+		$files = glob( rtrim( $args[0], '/' ) . '/posts-*.json' );
+
+		$importer = new JsonImporter( $wpdb );
+
+		foreach ( $files as $file ) {
+			$importer->import_post( $this->from_json_file( $file ) );
+		}
 	}
 
 	protected function from_json_file( $filename ) {
@@ -108,7 +147,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 			die( 'File not found.' );
 		}
 
-		return json_decode( file_get_contents( $users_file ) );
+		return json_decode( file_get_contents( $filename ) );
 	}
 
 	protected function to_json_file( $filename, $data ) {
