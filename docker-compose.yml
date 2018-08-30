@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:5
+    volumes:
+      - "./docker/data/db:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: password
+
+  phpfpm:
+    image: 10up/phpfpm
+    depends_on:
+      - mysql
+    volumes:
+      - ".:/var/www/html/wp-cli-replicator"
+      - "./docker/data/www:/var/www/html"
+      - "./docker/config/php-fpm/php.ini:/usr/local/etc/php/php.ini"
+    restart: always
