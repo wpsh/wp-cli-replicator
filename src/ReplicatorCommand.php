@@ -57,22 +57,48 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 		$parser = new XmlToJson();
 
-		// Parse all terms out of one file.
-		$users = $parser->parse_users( $files[0] );
 		$users_filename = sprintf( '%s/users.json', $json_dir );
-		$this->to_json_file( $users_filename, $users );
+		$terms_filename = sprintf( '%s/terms.json', $json_dir );
+
+		// Parse all terms out of one file.
+		if ( ! file_exists( $users_filename ) ) {
+			$users = $parser->parse_users( $files[0] );
+			$this->to_json_file( $users_filename, $users );
+
+			$this->success( sprintf(
+				'Parsed %d users to %s.',
+				count( $users ),
+				$users_filename
+			) );
+		} else {
+			$this->warn( sprintf(
+				'Skip parsing users because %s exists.',
+				$users_filename
+			) );
+		}
 
 		// Parse all users out of one file.
-		$terms = $parser->parse_terms( $files[0] );
-		$terms_filename = sprintf( '%s/terms.json', $json_dir );
-		$this->to_json_file( $terms_filename, $terms );
+		if ( ! file_exists( $terms_filename ) ) {
+			$terms = $parser->parse_terms( $files[0] );
+			$this->to_json_file( $terms_filename, $terms );
+
+			$this->success( sprintf(
+				'Parsed terms to %s.',
+				$terms_filename
+			) );
+		} else {
+			$this->warn( sprintf(
+				'Skip parsing terms because %s exists.',
+				$terms_filename
+			) );
+		}
 
 		foreach ( $files as $file ) {
 			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
 
 			if ( file_exists( $posts_filename ) ) {
 				$this->warn( sprintf(
-					'Skipping %s because file already exists.',
+					'Skip parsing posts because %s exists.',
 					$posts_filename
 				) );
 
@@ -83,7 +109,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 			$this->to_json_file( $posts_filename, $posts );
 
 			$this->success( sprintf(
-				'Parsed %s.',
+				'Parsed posts from %s to %s.',
+				dirname( $file ),
 				$posts_filename
 			) );
 		}
