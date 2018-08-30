@@ -1,6 +1,6 @@
 # WP Site Replicator
 
-Quickly create replicas of large production websites from WordPress eXtended RSS (WXR) export files.
+**Quickly create replicas of large production websites from WordPress eXtended RSS (WXR) export files.**
 
 ## Usage
 
@@ -56,3 +56,8 @@ Please note that you may need to specify `--url` for all commands if you're runn
 5. Import posts:
 
 	   wp replicator import-posts "path/to/posts-*.json"
+
+
+## Credits
+
+Created by [Kaspars Dambis](https://kaspars.net).
