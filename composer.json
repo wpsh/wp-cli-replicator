@@ -1,5 +1,5 @@
 {
-  "name": "wpsh/replicator",
+  "name": "wpsh/wp-cli-replicator",
   "version": "0.1.0",
   "type": "wp-cli-package",
   "require": {
