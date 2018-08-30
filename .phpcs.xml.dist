@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="Coding standards">
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility" />
+
+	<!-- https://github.com/PHPCompatibility/PHPCompatibility -->
+	<config name="testVersion" value="5.3-"/>
+
+	<rule ref="WordPress">
+		<exclude name="WordPress.VIP" />
+		<exclude name="WordPress.Files.FileName" />
+		<exclude name="Squiz.Commenting.FileComment.Missing" />
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
+		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
+	</rule>
+
+	<exclude-pattern>/vendor/</exclude-pattern>
+
+	<arg value="sp" />
+	<arg name="colors" />
+	<arg name="extensions" value="php" />
+	<arg name="parallel" value="4" />
+</ruleset>

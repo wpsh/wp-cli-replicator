@@ -2,6 +2,9 @@
 
 namespace WPSH_Replicator;
 
+/**
+ * Import data from JSON schema into WordPress.
+ */
 class JsonImporter {
 
 	/**
@@ -25,16 +28,20 @@ class JsonImporter {
 			if ( 0 === strpos( $option_key, 'theme_mods_' ) ) {
 				$theme_slug = get_option( 'stylesheet' );
 
-				$this->db->insert( $this->db->options, [
-					'option_name' => 'theme_mods_' . $theme_slug,
-					'option_value' => $option_value,
-				] );
+				$this->db->insert(
+					$this->db->options, [
+						'option_name' => 'theme_mods_' . $theme_slug,
+						'option_value' => $option_value,
+					]
+				);
 			}
 
-			$this->db->insert( $this->db->options, [
-				'option_name' => $option_key,
-				'option_value' => $option_value,
-			] );
+			$this->db->insert(
+				$this->db->options, [
+					'option_name' => $option_key,
+					'option_value' => $option_value,
+				]
+			);
 
 			$this->log( sprintf( 'Inserting option %s', $option_key ) );
 		}
@@ -57,7 +64,7 @@ class JsonImporter {
 		$placeholder_url = get_avatar_url(
 			'team-atlas@xwp.co',
 			array(
-				'size' => 1000
+				'size' => 1000,
 			)
 		);
 
@@ -88,40 +95,41 @@ class JsonImporter {
 
 			// @todo Add a flag to disable this.
 			// $post_exists = (int) $this->db->get_var( $this->db->prepare(
-			// 	"SELECT COUNT(*) FROM $this->db->posts WHERE ID = %d",
-			// 	$post->post_id
+			// "SELECT COUNT(*) FROM $this->db->posts WHERE ID = %d",
+			// $post->post_id
 			// ) );
 			//
 			// if ( ! empty( $post_exists ) ) {
-			// 	$this->log( sprintf(
-			// 		'Skipping post ID %d, already exists.',
-			// 		$post->post_id
-			// 	) );
+			// $this->log( sprintf(
+			// 'Skipping post ID %d, already exists.',
+			// $post->post_id
+			// ) );
 			//
-			// 	continue;
+			// continue;
 			// }
-
 			$post_author = '';
 			if ( isset( $login_user_map[ $post->author ] ) ) {
 				$post_author = $login_user_map[ $post->author ];
 			}
 
 			// @todo Bail if post ID already exists.
-			$this->db->insert( $this->db->posts, [
-				'ID' => $post->post_id,
-				'guid' => $post->guid,
-				'post_title' => $post->title,
-				'post_name' => $post->post_name,
-				'post_author' => $post_author,
-				'post_date' => $post->post_date,
-				'post_date_gmt' => $post->post_date_gmt,
-				'post_excerpt' => $post->description,
-				'post_content' => $post->post_content,
-				'post_status' => $post->status,
-				'post_parent' => $post->post_parent,
-				'post_type' => $post->post_type,
-				'post_mime_type' => $post->post_mime_type,
-			] );
+			$this->db->insert(
+				$this->db->posts, [
+					'ID' => $post->post_id,
+					'guid' => $post->guid,
+					'post_title' => $post->title,
+					'post_name' => $post->post_name,
+					'post_author' => $post_author,
+					'post_date' => $post->post_date,
+					'post_date_gmt' => $post->post_date_gmt,
+					'post_excerpt' => $post->description,
+					'post_content' => $post->post_content,
+					'post_status' => $post->status,
+					'post_parent' => $post->post_parent,
+					'post_type' => $post->post_type,
+					'post_mime_type' => $post->post_mime_type,
+				]
+			);
 
 			$posts_done[] = $post->post_id;
 
@@ -145,12 +153,14 @@ class JsonImporter {
 			}
 
 			foreach ( $term_slugs as $slug => $object_ids ) {
-				$term = $term_query->query( [
-					'slug' => $slug,
-					'taxonomy' => $taxonomy,
-					'get' => 'all',
-					'number' => 1,
-				] );
+				$term = $term_query->query(
+					[
+						'slug' => $slug,
+						'taxonomy' => $taxonomy,
+						'get' => 'all',
+						'number' => 1,
+					]
+				);
 
 				if ( ! empty( $term[0] ) ) {
 					$term_ids_by_tax[ $taxonomy ][] = $term[0]->term_id;
@@ -160,10 +170,12 @@ class JsonImporter {
 							continue;
 						}
 
-						$this->db->insert( $this->db->term_relationships, [
-							'object_id' => $post_id,
-							'term_taxonomy_id' => $term[0]->term_taxonomy_id,
-						] );
+						$this->db->insert(
+							$this->db->term_relationships, [
+								'object_id' => $post_id,
+								'term_taxonomy_id' => $term[0]->term_taxonomy_id,
+							]
+						);
 
 						/*
 						$this->log( sprintf(
@@ -197,29 +209,35 @@ class JsonImporter {
 					$meta_unserialized['file'] = $placeholder_file['file'];
 					$meta_value = serialize( $meta_unserialized );
 				} else {
-					$this->log( sprintf(
-						'Failed to unserialize _wp_attachment_metadata for post %d, value %s',
-						$postmeta->post_id,
-						$meta_value
-					) );
+					$this->log(
+						sprintf(
+							'Failed to unserialize _wp_attachment_metadata for post %d, value %s',
+							$postmeta->post_id,
+							$meta_value
+						)
+					);
 				}
 			}
 
-			$this->db->insert( $this->db->postmeta, [
-				'post_id' => $postmeta->post_id,
-				'meta_key' => $postmeta->meta_key,
-				'meta_value' => $meta_value,
-			] );
+			$this->db->insert(
+				$this->db->postmeta, [
+					'post_id' => $postmeta->post_id,
+					'meta_key' => $postmeta->meta_key,
+					'meta_value' => $meta_value,
+				]
+			);
 
 			unset( $postmeta );
 		}
 
 		$this->db->query( 'COMMIT' );
 
-		$this->log( sprintf(
-			'Import took %d seconds.',
-			time() - $time_import_start
-		) );
+		$this->log(
+			sprintf(
+				'Import took %d seconds.',
+				time() - $time_import_start
+			)
+		);
 
 		foreach ( $term_ids_by_tax as $taxonomy => $term_ids ) {
 			$term_ids = array_unique( $term_ids );
@@ -228,10 +246,12 @@ class JsonImporter {
 				continue;
 			}
 
-			$this->log( sprintf(
-				'Updating term counts for %s',
-				$taxonomy
-			) );
+			$this->log(
+				sprintf(
+					'Updating term counts for %s',
+					$taxonomy
+				)
+			);
 
 			// @todo This requires the taxonomy to be registered and post types associated with the taxonomy.
 			// wp_update_term_count_now( $term_ids, $taxonomy );
@@ -254,35 +274,40 @@ class JsonImporter {
 		foreach ( $terms as $term ) {
 			$term = wp_parse_args( $term, $term_defaults );
 
-			$this->db->insert( $this->db->terms, [
-				'term_id' => $term['term_id'],
-				'name' => $term['name'],
-				'slug' => $term['slug'],
-			] );
+			$this->db->insert(
+				$this->db->terms, [
+					'term_id' => $term['term_id'],
+					'name' => $term['name'],
+					'slug' => $term['slug'],
+				]
+			);
 
-			$this->db->insert( $this->db->term_taxonomy, [
-				'term_id' => $term['term_id'],
-				'taxonomy' => $term['taxonomy'],
-				'description' => $term['description'],
-				'parent' => $term['parent'],
-			] );
+			$this->db->insert(
+				$this->db->term_taxonomy, [
+					'term_id' => $term['term_id'],
+					'taxonomy' => $term['taxonomy'],
+					'description' => $term['description'],
+					'parent' => $term['parent'],
+				]
+			);
 
-			$this->log( sprintf(
-				'Inserted term [%s]: %s (%d)',
-				$term['taxonomy'],
-				$term['name'],
-				$term['term_id']
-			) );
+			$this->log(
+				sprintf(
+					'Inserted term [%s]: %s (%d)',
+					$term['taxonomy'],
+					$term['name'],
+					$term['term_id']
+				)
+			);
 		}
 
 		$this->db->query( 'COMMIT' );
 	}
 
 	public function import_users( $users ) {
-		//$this->db->query( "TRUNCATE TABLE $this->db->users" );
-		//$this->db->query( "TRUNCATE TABLE $this->db->usermeta" );
-
-		$password = wp_hash_password( 'wordpress' );
+		// $this->db->query( "TRUNCATE TABLE $this->db->users" );
+		// $this->db->query( "TRUNCATE TABLE $this->db->usermeta" );
+		$password = wp_hash_password( 'WordPress' );
 
 		foreach ( $users as $user ) {
 			$user = (array) $user;
@@ -293,23 +318,27 @@ class JsonImporter {
 				wp_delete_user( $current_user->ID );
 			}
 
-			$this->db->insert( $this->db->users, [
-				'ID' => $user['author_id'],
-				'user_login' => $user['author_login'],
-				'user_pass' => $password,
-				'user_nicename' => $user['author_login'],
-				'user_email' => $user['author_email'],
-				'display_name' => $user['author_display_name'],
-			] );
+			$this->db->insert(
+				$this->db->users, [
+					'ID' => $user['author_id'],
+					'user_login' => $user['author_login'],
+					'user_pass' => $password,
+					'user_nicename' => $user['author_login'],
+					'user_email' => $user['author_email'],
+					'display_name' => $user['author_display_name'],
+				]
+			);
 
 			// Add the user to the current site.
 			add_user_to_blog( get_current_blog_id(), $user['author_id'], 'editor' );
 
-			$this->log( sprintf(
-				'Inserted user %s: %d',
-				$user['author_login'],
-				$user['author_id']
-			) );
+			$this->log(
+				sprintf(
+					'Inserted user %s: %d',
+					$user['author_login'],
+					$user['author_id']
+				)
+			);
 		}
 	}
 
