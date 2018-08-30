@@ -38,10 +38,9 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * [--fresh]
 	 * : Override any existing files.
 	 *
-	 * @subcommand wxr-to-json
-	 * @alias convert
+	 * @subcommand parse-wxr
 	 */
-	public function wxr_to_json( $args, $assoc_args ) {
+	public function parse_wxr( $args, $assoc_args ) {
 		list( $xml_dir ) = $args;
 
 		$fresh = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'fresh' );

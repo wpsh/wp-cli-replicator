@@ -18,9 +18,9 @@ Export content from the source site:
 
 ### Prepare Import
 
-1. Parse the exported WXR files into JSON files for site users, terms and posts:
+1. Parse the exported [WordPress eXtended RSS or WXR](https://codex.wordpress.org/Tools_Export_Screen) into JSON files for site users, terms and posts:
 
-	   wp replicator convert path/to/wxr/directory
+	   wp replicator parse-wxr path/to/wxr/directory
 
    where `path/to/wxr/directory` is the path to the directory with all the XML files.
 
