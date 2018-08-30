@@ -13,18 +13,24 @@ class ReplicatorCommand extends WP_CLI_Command {
 	/**
 	 * Convert WXR export XML files into JSON files.
 	 *
+	 * ## OPTIONS
+	 *
+	 * <path>
+	 * : Path to the directory containing XML files.
+	 *
 	 * @subcommand wxr-to-json
 	 */
 	public function wxr_to_json( $args, $assoc_args ) {
-		if ( ! isset( $args[0] ) ) {
-			die( 'Please specify the path to WXR export' );
-		}
+		list( $xml_dir ) = $args;
 
-		$xml_dir = rtrim( $args[0], '/' );
+		$xml_dir = rtrim( $xml_dir, '/' );
 		$files = glob( $xml_dir . '/*.xml' );
 
 		if ( empty( $files ) ) {
-			die( 'No files found at ' . $xml_dir );
+			return $this->error( sprintf(
+				'No XML files found in %s.',
+				$xml_dir
+			) );
 		}
 
 		$json_dir = dirname( $xml_dir ) . '/json';
@@ -55,20 +61,17 @@ class ReplicatorCommand extends WP_CLI_Command {
 	/**
 	 * Import options.
 	 *
+	 * ## OPTIONS
+	 *
+	 * <path>
+	 * : Path to the options.json file.
+	 *
 	 * @subcommand import-options
 	 */
 	public function import_options( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! isset( $args[0] ) ) {
-			die( 'Please specify path to the exported options.json.' );
-		}
-
-		$options_file = $args[0];
-
-		if ( ! file_exists( $options_file ) ) {
-			die( 'Specified options.json not found.' );
-		}
+		list( $options_file ) = $args;
 
 		$importer = new JsonImporter( $wpdb );
 
@@ -78,20 +81,17 @@ class ReplicatorCommand extends WP_CLI_Command {
 	/**
 	 * Import users.
 	 *
+	 * ## OPTIONS
+	 *
+	 * <path>
+	 * : Path to the users.json file.
+	 *
 	 * @subcommand import-users
 	 */
 	public function import_users( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! isset( $args[0] ) ) {
-			die( 'Please specify path to the exported options.json.' );
-		}
-
-		$users_file = $args[0];
-
-		if ( ! file_exists( $users_file ) ) {
-			die( 'Specified users not found.' );
-		}
+		list( $users_file ) = $args;
 
 		$importer = new JsonImporter( $wpdb );
 
@@ -101,20 +101,17 @@ class ReplicatorCommand extends WP_CLI_Command {
 	/**
 	 * Import terms.
 	 *
+	 * ## OPTIONS
+	 *
+	 * <path>
+	 * : Path to terms.json file.
+	 *
 	 * @subcommand import-terms
 	 */
 	public function import_terms( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! isset( $args[0] ) ) {
-			die( 'Please specify path to the exported options.json.' );
-		}
-
-		$terms_file = $args[0];
-
-		if ( ! file_exists( $terms_file ) ) {
-			die( 'Specified terms file not found.' );
-		}
+		list( $terms_file ) = $args;
 
 		$importer = new JsonImporter( $wpdb );
 
@@ -124,16 +121,26 @@ class ReplicatorCommand extends WP_CLI_Command {
 	/**
 	 * Import posts.
 	 *
+	 * ## OPTIONS
+	 *
+	 * <path>
+	 * : Path to the directory with the posts-*.json files.
+	 *
 	 * @subcommand import-posts
 	 */
 	public function import_posts( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! isset( $args[0] ) ) {
-			die( 'Please specify path to posts.' );
-		}
+		list( $posts_dir ) = $args;
 
-		$files = glob( rtrim( $args[0], '/' ) . '/posts-*.json' );
+		$files = glob( rtrim( $posts_dir, '/' ) . '/posts-*.json' );
+
+		if ( empty( $files ) ) {
+			return $this->error( sprintf(
+				'Failed to find post json files at %s.',
+				$posts_dir
+			) );
+		}
 
 		$importer = new JsonImporter( $wpdb );
 
@@ -144,7 +151,10 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 	protected function from_json_file( $filename ) {
 		if ( ! file_exists( $filename ) ) {
-			die( 'File not found.' );
+			return $this->error( sprintf(
+				'File %s not found.',
+				$filename
+			) );
 		}
 
 		return json_decode( file_get_contents( $filename ) );
@@ -152,6 +162,10 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 	protected function to_json_file( $filename, $data ) {
 		return file_put_contents( $filename, json_encode( $data ) );
+	}
+
+	protected function error( $message ) {
+		return WP_CLI::error( $message );
 	}
 
 }

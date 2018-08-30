@@ -2,6 +2,8 @@
 
 namespace WPSH_Replicator;
 
+use WP_CLI;
+
 /**
  * Import data from JSON schema into WordPress.
  */
@@ -343,7 +345,7 @@ class JsonImporter {
 	}
 
 	public function log( $message ) {
-		echo $message . "\n";
+		WP_CLI::log( $message );
 	}
 
 }
