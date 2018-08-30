@@ -102,7 +102,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 		foreach ( $files as $file ) {
 			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
 
-			if ( file_exists( $posts_filename ) || $fresh ) {
+			if ( ! file_exists( $posts_filename ) || $fresh ) {
 				$posts = $parser->parse( $file );
 				$this->to_json_file( $posts_filename, $posts );
 
