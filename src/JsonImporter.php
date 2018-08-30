@@ -23,13 +23,13 @@ class JsonImporter {
 			die( 'Options empty.' );
 		}
 
+		$theme_slug = get_option( 'stylesheet' );
+
 		foreach ( $option_json->options as $option_key => $option_value ) {
 			delete_option( $option_key );
 
 			// Assume the theme mods are for this theme.
 			if ( 0 === strpos( $option_key, 'theme_mods_' ) ) {
-				$theme_slug = get_option( 'stylesheet' );
-
 				$this->db->insert(
 					$this->db->options, [
 						'option_name' => 'theme_mods_' . $theme_slug,
