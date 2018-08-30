@@ -24,7 +24,7 @@
     "wp-coding-standards/wpcs": "^1.0"
   },
   "scripts": {
-    "phpcs": [
+    "wpcs": [
       "vendor/bin/phpcs src"
     ]
   }
