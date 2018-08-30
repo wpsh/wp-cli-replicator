@@ -10,7 +10,6 @@ use WP_CLI_Command;
  */
 class ReplicatorCommand extends WP_CLI_Command {
 
-
 	/**
 	 * Convert WXR export XML files into JSON files.
 	 *
@@ -51,6 +50,65 @@ class ReplicatorCommand extends WP_CLI_Command {
 			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
 			$this->to_json_file( $posts_filename, $posts );
 		}
+	}
+
+	public function import_options( $args, $assoc_args ) {
+		global $wpdb;
+
+		if ( ! isset( $args[0] ) ) {
+			die( 'Please specify path to the exported options.json.' );
+		}
+
+		$options_file = $args[0];
+
+		if ( ! file_exists( $options_file ) ) {
+			die( 'Specified options.json not found.' );
+		}
+
+		$importer = new JsonImporter( $wpdb );
+		return $importer->import_options( $this->from_json_file( $options_file ) );
+	}
+
+	public function import_users( $args, $assoc_args ) {
+		global $wpdb;
+
+		if ( ! isset( $args[0] ) ) {
+			die( 'Please specify path to the exported options.json.' );
+		}
+
+		$users_file = $args[0];
+
+		if ( ! file_exists( $users_file ) ) {
+			die( 'Specified users not found.' );
+		}
+
+		$importer = new JsonImporter( $wpdb );
+		return $importer->import_users( $this->from_json_file( $users_file ) );
+	}
+
+	public function import_terms( $args, $assoc_args ) {
+		global $wpdb;
+
+		if ( ! isset( $args[0] ) ) {
+			die( 'Please specify path to the exported options.json.' );
+		}
+
+		$terms_file = $args[0];
+
+		if ( ! file_exists( $terms_file ) ) {
+			die( 'Specified terms file not found.' );
+		}
+
+		$importer = new JsonImporter( $wpdb );
+		return $importer->import_terms( $this->from_json_file( $terms_file ) );
+	}
+
+	protected function from_json_file( $filename ) {
+		if ( ! file_exists( $filename ) ) {
+			die( 'File not found.' );
+		}
+
+		return json_decode( file_get_contents( $users_file ) );
 	}
 
 	protected function to_json_file( $filename, $data ) {
