@@ -34,10 +34,16 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * <path>
 	 * : Path to the directory containing XML files.
 	 *
+	 *
+	 * [--fresh]
+	 * : Override any existing files.
+	 *
 	 * @subcommand wxr-to-json
 	 */
 	public function wxr_to_json( $args, $assoc_args ) {
 		list( $xml_dir ) = $args;
+
+		$fresh = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'fresh' );
 
 		$xml_dir = rtrim( $xml_dir, '/' );
 		$files = glob( $xml_dir . '/*.xml' );
@@ -61,7 +67,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 		$terms_filename = sprintf( '%s/terms.json', $json_dir );
 
 		// Parse all terms out of one file.
-		if ( ! file_exists( $users_filename ) ) {
+		if ( ! file_exists( $users_filename ) || $fresh ) {
 			$users = $parser->parse_users( $files[0] );
 			$this->to_json_file( $users_filename, $users );
 
@@ -78,7 +84,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 
 		// Parse all users out of one file.
-		if ( ! file_exists( $terms_filename ) ) {
+		if ( ! file_exists( $terms_filename ) || $fresh ) {
 			$terms = $parser->parse_terms( $files[0] );
 			$this->to_json_file( $terms_filename, $terms );
 
@@ -96,23 +102,21 @@ class ReplicatorCommand extends WP_CLI_Command {
 		foreach ( $files as $file ) {
 			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
 
-			if ( file_exists( $posts_filename ) ) {
+			if ( file_exists( $posts_filename ) || $fresh ) {
+				$posts = $parser->parse( $file );
+				$this->to_json_file( $posts_filename, $posts );
+
+				$this->success( sprintf(
+					'Parsed posts from %s to %s.',
+					dirname( $file ),
+					$posts_filename
+				) );
+			} else {
 				$this->warn( sprintf(
 					'Skip parsing posts because %s exists.',
 					$posts_filename
 				) );
-
-				continue;
 			}
-
-			$posts = $parser->parse( $file );
-			$this->to_json_file( $posts_filename, $posts );
-
-			$this->success( sprintf(
-				'Parsed posts from %s to %s.',
-				dirname( $file ),
-				$posts_filename
-			) );
 		}
 	}
 
