@@ -87,7 +87,7 @@ class JsonImporter {
 		$posts_done = [];
 		$term_ids_by_tax = [];
 		$time_import_start = time();
-		$term_query = new WP_Term_Query();
+		$term_query = new \WP_Term_Query();
 		$login_user_map = $this->get_user_login_id_map();
 		$placeholder_file = $this->get_image_placeholder_file();
 
