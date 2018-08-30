@@ -191,7 +191,17 @@ class ReplicatorCommand extends WP_CLI_Command {
 		}
 
 		foreach ( $files as $file ) {
+			$this->log( sprintf(
+				'Start importing posts from %s',
+				$file
+			) );
+
 			$this->importer->import_post( $this->from_json_file( $file ) );
+
+			$this->success( sprintf(
+				'Finished importing posts from %s',
+				$file
+			) );
 		}
 	}
 

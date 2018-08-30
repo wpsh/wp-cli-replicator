@@ -109,6 +109,7 @@ class JsonImporter {
 			//
 			// continue;
 			// }
+
 			$post_author = '';
 			if ( isset( $login_user_map[ $post->author ] ) ) {
 				$post_author = $login_user_map[ $post->author ];
@@ -236,7 +237,7 @@ class JsonImporter {
 
 		$this->log(
 			sprintf(
-				'Import took %d seconds.',
+				'Imported in %d seconds.',
 				time() - $time_import_start
 			)
 		);
@@ -344,7 +345,7 @@ class JsonImporter {
 	}
 
 	public function log( $message ) {
-		WP_CLI::log( $message );
+		return WP_CLI::log( $message );
 	}
 
 }
