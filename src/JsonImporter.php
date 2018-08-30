@@ -249,13 +249,6 @@ class JsonImporter {
 				continue;
 			}
 
-			$this->log(
-				sprintf(
-					'Updating term counts for %s',
-					$taxonomy
-				)
-			);
-
 			// @todo This requires the taxonomy to be registered and post types associated with the taxonomy.
 			// wp_update_term_count_now( $term_ids, $taxonomy );
 		}
