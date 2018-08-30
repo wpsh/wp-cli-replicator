@@ -38,30 +38,23 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 		// Parse all terms out of one file.
 		$users = $parser->parse_users( $files[0] );
-
-		file_put_contents(
-			sprintf( '%s/users.json', $json_dir ),
-			json_encode( $users )
-		);
+		$users_filename = sprintf( '%s/users.json', $json_dir );
+		$this->to_json_file( $users_filename, $users );
 
 		// Parse all users out of one file.
 		$terms = $parser->parse_terms( $files[0] );
-
-		file_put_contents(
-			sprintf( '%s/terms.json', $json_dir ),
-			json_encode( $terms )
-		);
+		$terms_filename = sprintf( '%s/terms.json', $json_dir );
+		$this->to_json_file( $terms_filename, $terms );
 
 		foreach ( $files as $file ) {
-			$filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
-
-			$data = $parser->parse( $file );
-
-			file_put_contents(
-				$filename,
-				json_encode( $data )
-			);
+			$posts = $parser->parse( $file );
+			$posts_filename = sprintf( '%s/posts-%s.json', $json_dir, basename( $file, '.xml' ) );
+			$this->to_json_file( $posts_filename, $posts );
 		}
+	}
+
+	protected function to_json_file( $filename, $data ) {
+		return file_put_contents( $filename, json_encode( $data ) );
 	}
 
 }
