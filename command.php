@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Replicator
+ * Main CLI command file.
  */
 
 namespace WPSH_Replicator;
