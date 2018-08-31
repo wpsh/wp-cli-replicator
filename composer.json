@@ -38,7 +38,7 @@
       "vendor/bin/phpcs src"
     ],
     "wp": [
-      "./scripts/vagrant/wp.sh"
+      "./scripts/vagrant/wp-cli.sh"
     ]
   },
   "extra": {
