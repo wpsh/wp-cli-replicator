@@ -3,6 +3,7 @@
 namespace WPSH_Replicator;
 
 use WP_CLI_Command;
+use WP_CLI\Utils;
 
 /**
  * Defines the Replicator WP CLI command.
@@ -49,7 +50,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 	public function parse_wxr( $args, $assoc_args ) {
 		list( $xml_dir ) = $args;
 
-		$fresh = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'fresh' );
+		$fresh = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'fresh' );
 
 		$xml_dir = rtrim( $xml_dir, '/' );
 		$files = glob( $xml_dir . '/*.xml' );

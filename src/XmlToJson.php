@@ -7,14 +7,15 @@ namespace WPSH_Replicator;
  */
 class XmlToJson extends CliTool {
 
-	protected function load_xml( $file, $namespace = null ) {
+	protected function load_xml( $file ) {
 		$xml = file_get_contents( $file );
 		$xml = $this->escape_xml( $xml );
-		$xml = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_PARSEHUGE, $namespace, (bool) $namespace );
+		$xml = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_PARSEHUGE );
 
 		if ( ! $xml ) {
 			return $this->error( sprintf(
-				'Error at %s.', $xml_file
+				'Failed to parse XML %s',
+				$file
 			) );
 		}
 
@@ -22,15 +23,17 @@ class XmlToJson extends CliTool {
 	}
 
 	public function parse_terms( $file ) {
-		$xml = $this->load_xml( $file, 'wp' );
+		$xml = $this->load_xml( $file );
+		$ns = $xml->getNamespaces( true );
 
-		return $this->process_terms( $xml->channel->children() );
+		return $this->process_terms( $xml->channel->children( $ns['wp'] ) );
 	}
 
 	public function parse_users( $file ) {
-		$xml = $this->load_xml( $file, 'wp' );
+		$xml = $this->load_xml( $file );
+		$ns = $xml->getNamespaces( true );
 
-		return $this->process_users( $xml->channel->children() );
+		return $this->process_users( $xml->channel->children( $ns['wp'] ) );
 	}
 
 	public function parse( $xml_file ) {
@@ -46,7 +49,6 @@ class XmlToJson extends CliTool {
 			'postmeta' => [],
 			'term_objects' => [],
 		];
-
 
 		$xml = $this->load_xml( $xml_file );
 		$ns = $xml->getNamespaces( true );
