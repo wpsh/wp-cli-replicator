@@ -7,10 +7,10 @@ use WP_CLI;
 /**
  * Import data from JSON schema into WordPress.
  */
-class JsonImporter {
+class JsonImporter extends CliTool {
 
 	/**
-	 * @var \wpdb Instance of WordPress \wpdb.
+	 * @var \wpdb Instance of WordPress DB class.
 	 */
 	protected $db;
 
@@ -20,16 +20,16 @@ class JsonImporter {
 
 	public function import_options( $option_json ) {
 		if ( empty( $option_json->options ) ) {
-			die( 'Options empty.' );
+			return $this->error( 'Options empty.' );
 		}
+
+		// Assume all theme mods are for this theme.
+		$theme_slug = get_option( 'stylesheet' );
 
 		foreach ( $option_json->options as $option_key => $option_value ) {
 			delete_option( $option_key );
 
-			// Assume the theme mods are for this theme.
 			if ( 0 === strpos( $option_key, 'theme_mods_' ) ) {
-				$theme_slug = get_option( 'stylesheet' );
-
 				$this->db->insert(
 					$this->db->options, [
 						'option_name' => 'theme_mods_' . $theme_slug,
@@ -45,10 +45,8 @@ class JsonImporter {
 				]
 			);
 
-			$this->log( sprintf( 'Inserting option %s', $option_key ) );
+			$this->debug( sprintf( 'Inserted option %s', $option_key ) );
 		}
-
-		flush_rewrite_rules();
 	}
 
 	public function get_user_login_id_map() {
@@ -77,7 +75,7 @@ class JsonImporter {
 		);
 
 		if ( empty( $file['file'] ) ) {
-			die( 'Failed to create a placeholder image file.' );
+			return $this->error( 'Failed to create a placeholder image file.' );
 		}
 
 		return $file;
@@ -86,8 +84,7 @@ class JsonImporter {
 	public function import_post( $import ) {
 		$posts_done = [];
 		$term_ids_by_tax = [];
-		$time_import_start = time();
-		$term_query = new WP_Term_Query();
+		$term_query = new \WP_Term_Query();
 		$login_user_map = $this->get_user_login_id_map();
 		$placeholder_file = $this->get_image_placeholder_file();
 
@@ -109,6 +106,7 @@ class JsonImporter {
 			//
 			// continue;
 			// }
+
 			$post_author = '';
 			if ( isset( $login_user_map[ $post->author ] ) ) {
 				$post_author = $login_user_map[ $post->author ];
@@ -211,7 +209,7 @@ class JsonImporter {
 					$meta_unserialized['file'] = $placeholder_file['file'];
 					$meta_value = serialize( $meta_unserialized );
 				} else {
-					$this->log(
+					$this->warn(
 						sprintf(
 							'Failed to unserialize _wp_attachment_metadata for post %d, value %s',
 							$postmeta->post_id,
@@ -234,26 +232,12 @@ class JsonImporter {
 
 		$this->db->query( 'COMMIT' );
 
-		$this->log(
-			sprintf(
-				'Import took %d seconds.',
-				time() - $time_import_start
-			)
-		);
-
 		foreach ( $term_ids_by_tax as $taxonomy => $term_ids ) {
 			$term_ids = array_unique( $term_ids );
 
 			if ( empty( $term_ids ) ) {
 				continue;
 			}
-
-			$this->log(
-				sprintf(
-					'Updating term counts for %s',
-					$taxonomy
-				)
-			);
 
 			// @todo This requires the taxonomy to be registered and post types associated with the taxonomy.
 			// wp_update_term_count_now( $term_ids, $taxonomy );
@@ -341,10 +325,6 @@ class JsonImporter {
 				)
 			);
 		}
-	}
-
-	public function log( $message ) {
-		WP_CLI::log( $message );
 	}
 
 }

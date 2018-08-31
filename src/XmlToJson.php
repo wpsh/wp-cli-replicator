@@ -5,7 +5,7 @@ namespace WPSH_Replicator;
 /**
  * Import data from JSON schema into WordPress.
  */
-class XmlToJson {
+class XmlToJson extends CliTool {
 
 	protected function load_xml( $file ) {
 		$xml = file_get_contents( $file );
@@ -13,7 +13,10 @@ class XmlToJson {
 		$xml = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_PARSEHUGE );
 
 		if ( ! $xml ) {
-			die( sprintf( 'Error at %s.', $xml_file ) );
+			return $this->error( sprintf(
+				'Failed to parse XML %s',
+				$file
+			) );
 		}
 
 		return $xml;
@@ -46,7 +49,6 @@ class XmlToJson {
 			'postmeta' => [],
 			'term_objects' => [],
 		];
-
 
 		$xml = $this->load_xml( $xml_file );
 		$ns = $xml->getNamespaces( true );
@@ -107,7 +109,7 @@ class XmlToJson {
 		return $data;
 	}
 
-	function escape_xml( $xml ) {
+	protected function escape_xml( $xml ) {
 		// Remove all invalid characters per XML spec:
 		// @see https://www.w3.org/TR/xml11/#charsets
 		$xml = preg_replace( '/[^\x9\xA\xB\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );

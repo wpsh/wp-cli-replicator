@@ -11,9 +11,9 @@ This command relies on writing directly to the WP database via WP DB API so both
 
 Export content from the source site:
 
-1. Export the site content using the [WordPress Importer](https://wordpress.org/plugins/wordpress-importer/). To run the export, navigate to "Tools &rarr; Export" in your site dashboard.
+1. Use the [WordPress Importer](https://wordpress.org/plugins/wordpress-importer/) plugin or the [`wp export` command](https://developer.wordpress.org/cli/commands/export/) to export the site content.
 
-2. Export the site options using the [WP Options Importer](https://wordpress.org/plugins/options-importer/) plugin. The output should be a single `options.json` file.
+2. Use the [WP Options Importer](https://wordpress.org/plugins/options-importer/) plugin to export the site options. The output should be a single `options.json` file.
 
 
 ### Prepare Import
