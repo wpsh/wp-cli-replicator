@@ -86,7 +86,6 @@ class JsonImporter {
 	public function import_post( $import ) {
 		$posts_done = [];
 		$term_ids_by_tax = [];
-		$time_import_start = time();
 		$term_query = new \WP_Term_Query();
 		$login_user_map = $this->get_user_login_id_map();
 		$placeholder_file = $this->get_image_placeholder_file();
@@ -234,13 +233,6 @@ class JsonImporter {
 		}
 
 		$this->db->query( 'COMMIT' );
-
-		$this->log(
-			sprintf(
-				'Imported in %d seconds.',
-				time() - $time_import_start
-			)
-		);
 
 		foreach ( $term_ids_by_tax as $taxonomy => $term_ids ) {
 			$term_ids = array_unique( $term_ids );
