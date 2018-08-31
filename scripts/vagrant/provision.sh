@@ -6,7 +6,7 @@ set -e
 echo "cd /vagrant" >> ~/.bashrc
 
 # Map wp to wp-cli inside the container.
-echo "alias wp='docker-compose --file /vagrant/docker-compose.yml exec -T --user www-data phpfpm wp \"\${@:2}\"'" >> ~/.bashrc
+sudo ln -s /vagrant/scripts/vagrant/wp-cmd.sh /usr/local/bin/wp
 
 # Map binary name to source URL.
 REPOS=(
