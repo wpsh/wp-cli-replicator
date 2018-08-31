@@ -10,7 +10,7 @@ use WP_CLI;
 class JsonImporter {
 
 	/**
-	 * @var \wpdb Instance of WordPress \wpdb.
+	 * @var \wpdb Instance of WordPress DB class.
 	 */
 	protected $db;
 
@@ -77,7 +77,7 @@ class JsonImporter {
 		);
 
 		if ( empty( $file['file'] ) ) {
-			die( 'Failed to create a placeholder image file.' );
+			return $this->error( 'Failed to create a placeholder image file.' );
 		}
 
 		return $file;
@@ -211,7 +211,7 @@ class JsonImporter {
 					$meta_unserialized['file'] = $placeholder_file['file'];
 					$meta_value = serialize( $meta_unserialized );
 				} else {
-					$this->log(
+					$this->warn(
 						sprintf(
 							'Failed to unserialize _wp_attachment_metadata for post %d, value %s',
 							$postmeta->post_id,
@@ -331,6 +331,14 @@ class JsonImporter {
 
 	public function log( $message ) {
 		return WP_CLI::log( $message );
+	}
+
+	public function warn( $message ) {
+		return WP_CLI::warn( $message );
+	}
+
+	public function error( $message ) {
+		return WP_CLI::error( $message );
 	}
 
 }
