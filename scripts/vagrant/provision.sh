@@ -23,8 +23,7 @@ sudo apt-get install -y \
 	docker-ce avahi-daemon zip unzip php-cli php-curl php-dom php-zip php-zip
 
 # Ensure we can run docker commands without extra permissions.
-sudo usermod -a -G docker $USER
-newgrp docker
+sudo usermod -a -G docker "$USER"
 
 # Install various binary scripts.
 for repo_set in "${REPOS[@]}"; do
