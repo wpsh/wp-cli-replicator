@@ -144,6 +144,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 		// Options also contain the rewrite rules.
 		flush_rewrite_rules();
+
+		$this->cli->success( 'Options imported.' );
 	}
 
 	/**
@@ -160,6 +162,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 		list( $users_file ) = $args;
 
 		$this->importer->import_users( $this->from_json_file( $users_file ) );
+
+		$this->cli->success( 'Users imported.' );
 	}
 
 	/**
@@ -176,6 +180,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 		list( $terms_file ) = $args;
 
 		$this->importer->import_terms( $this->from_json_file( $terms_file ) );
+
+		$this->cli->success( 'Taxonomies and terms imported.' );
 	}
 
 	/**
@@ -216,6 +222,8 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 			WP_CLI\Utils\wp_clear_object_cache();
 		}
+
+		$this->cli->success( 'All posts imported.' );
 	}
 
 	public function from_json_file( $filename ) {
