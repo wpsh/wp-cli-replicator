@@ -11,6 +11,7 @@ echo "alias wp='docker-compose --file /vagrant/docker-compose.yml exec -T --user
 # Map binary name to source URL.
 REPOS=(
 	"docker-compose,https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m`"
+	"composer,https://getcomposer.org/download/1.7.2/composer.phar"
 )
 
 # Add Docker repo.
@@ -19,7 +20,7 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 
 sudo apt-get update
 sudo apt-get install -y \
-	docker-ce avahi-daemon
+	docker-ce avahi-daemon php-cli php-curl php-dom
 
 # Ensure we can run docker commands without extra permissions.
 sudo usermod -a -G docker $USER
