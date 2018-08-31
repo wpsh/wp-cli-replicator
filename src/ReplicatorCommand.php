@@ -21,6 +21,9 @@ class ReplicatorCommand extends WP_CLI_Command {
 	 * Init the command.
 	 */
 	public function __construct() {
+		/**
+		 * @var \wpdb $wpdb
+		 */
 		global $wpdb;
 
 		$this->importer = new JsonImporter( $wpdb );
@@ -202,6 +205,14 @@ class ReplicatorCommand extends WP_CLI_Command {
 				'Finished importing posts from %s',
 				$file
 			) );
+
+			$this->log( sprintf(
+				'Using %s of memory',
+				size_format( memory_get_peak_usage() )
+			) );
+
+			// Try to clear up as much memory as possible.
+			$this->importer->cleanup_memory();
 		}
 	}
 

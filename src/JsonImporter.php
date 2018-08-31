@@ -337,6 +337,31 @@ class JsonImporter {
 		}
 	}
 
+	/**
+	 * Ported over from VIP.
+	 *
+	 * @return void
+	 */
+	protected function cleanup_memory() {
+		/**
+		 * @var \WP_Object_Cache $wp_object_cache
+		 */
+		global $wp_object_cache;
+
+		$this->db->queries = array();
+
+		if ( isset( $wp_object_cache->stats ) ) {
+			$wp_object_cache->group_ops = array();
+			$wp_object_cache->stats = array();
+			$wp_object_cache->memcache_debug = array();
+			$wp_object_cache->cache = array();
+
+			if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
+				$wp_object_cache->__remoteset();
+			}
+		}
+	}
+
 	public function log( $message ) {
 		return WP_CLI::log( $message );
 	}
