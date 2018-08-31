@@ -38,6 +38,3 @@ for repo_set in "${REPOS[@]}"; do
 		fi
 	done <<< "$repo_set"
 done
-
-# Install WordPress.
-. /vagrant/scripts/vagrant/wp-install.sh
