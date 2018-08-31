@@ -202,17 +202,13 @@ class ReplicatorCommand extends WP_CLI_Command {
 			$this->importer->import_post( $this->from_json_file( $file ) );
 
 			$this->success( sprintf(
-				'Finished importing posts from %s',
-				$file
-			) );
-
-			$this->log( sprintf(
-				'Using %s of memory',
+				'Finished importing posts from %s using %s of memory.',
+				$file,
 				size_format( memory_get_peak_usage() )
 			) );
 
 			// Try to clear up as much memory as possible.
-			$this->importer->cleanup_memory();
+			WP_CLI\Utils\wp_clear_object_cache();
 		}
 	}
 
