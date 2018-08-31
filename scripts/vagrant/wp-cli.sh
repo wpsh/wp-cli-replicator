@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # wp is an alias we defined during provision.
-vagrant ssh -c "wp $*"
+vagrant ssh -c "wp ${*:1}"
