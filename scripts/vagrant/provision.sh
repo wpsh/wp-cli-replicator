@@ -20,7 +20,7 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 
 sudo apt-get update
 sudo apt-get install -y \
-	docker-ce avahi-daemon php-cli php-curl php-dom
+	docker-ce avahi-daemon zip unzip php-cli php-curl php-dom php-zip php-zip
 
 # Ensure we can run docker commands without extra permissions.
 sudo usermod -a -G docker $USER
