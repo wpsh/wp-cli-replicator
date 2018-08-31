@@ -24,6 +24,7 @@ sudo apt-get install -y \
 
 # Ensure we can run docker commands without extra permissions.
 sudo usermod -a -G docker $USER
+newgrp docker
 
 # Install various binary scripts.
 for repo_set in "${REPOS[@]}"; do
