@@ -5,32 +5,32 @@ namespace WPSH_Replicator;
 /**
  * Import data from JSON schema into WordPress.
  */
-class XmlToJson {
+class XmlToJson extends CliTool {
 
-	protected function load_xml( $file ) {
+	protected function load_xml( $file, $namespace = null ) {
 		$xml = file_get_contents( $file );
 		$xml = $this->escape_xml( $xml );
-		$xml = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_PARSEHUGE );
+		$xml = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_PARSEHUGE, $namespace, (bool) $namespace );
 
 		if ( ! $xml ) {
-			die( sprintf( 'Error at %s.', $xml_file ) );
+			return $this->error( sprintf(
+				'Error at %s.', $xml_file
+			) );
 		}
 
 		return $xml;
 	}
 
 	public function parse_terms( $file ) {
-		$xml = $this->load_xml( $file );
-		$ns = $xml->getNamespaces( true );
+		$xml = $this->load_xml( $file, 'wp' );
 
-		return $this->process_terms( $xml->channel->children( $ns['wp'] ) );
+		return $this->process_terms( $xml->channel->children() );
 	}
 
 	public function parse_users( $file ) {
-		$xml = $this->load_xml( $file );
-		$ns = $xml->getNamespaces( true );
+		$xml = $this->load_xml( $file, 'wp' );
 
-		return $this->process_users( $xml->channel->children( $ns['wp'] ) );
+		return $this->process_users( $xml->channel->children() );
 	}
 
 	public function parse( $xml_file ) {
@@ -107,7 +107,7 @@ class XmlToJson {
 		return $data;
 	}
 
-	function escape_xml( $xml ) {
+	protected function escape_xml( $xml ) {
 		// Remove all invalid characters per XML spec:
 		// @see https://www.w3.org/TR/xml11/#charsets
 		$xml = preg_replace( '/[^\x9\xA\xB\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );

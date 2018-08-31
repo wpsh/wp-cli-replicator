@@ -7,7 +7,7 @@ use WP_CLI;
 /**
  * Import data from JSON schema into WordPress.
  */
-class JsonImporter {
+class JsonImporter extends CliTool {
 
 	/**
 	 * @var \wpdb Instance of WordPress DB class.
@@ -20,15 +20,15 @@ class JsonImporter {
 
 	public function import_options( $option_json ) {
 		if ( empty( $option_json->options ) ) {
-			die( 'Options empty.' );
+			return $this->error( 'Options empty.' );
 		}
 
+		// Assume all theme mods are for this theme.
 		$theme_slug = get_option( 'stylesheet' );
 
 		foreach ( $option_json->options as $option_key => $option_value ) {
 			delete_option( $option_key );
 
-			// Assume the theme mods are for this theme.
 			if ( 0 === strpos( $option_key, 'theme_mods_' ) ) {
 				$this->db->insert(
 					$this->db->options, [
@@ -45,10 +45,8 @@ class JsonImporter {
 				]
 			);
 
-			$this->log( sprintf( 'Inserting option %s', $option_key ) );
+			$this->debug( sprintf( 'Inserted option %s', $option_key ) );
 		}
-
-		flush_rewrite_rules();
 	}
 
 	public function get_user_login_id_map() {
@@ -327,18 +325,6 @@ class JsonImporter {
 				)
 			);
 		}
-	}
-
-	public function log( $message ) {
-		return WP_CLI::log( $message );
-	}
-
-	public function warn( $message ) {
-		return WP_CLI::warn( $message );
-	}
-
-	public function error( $message ) {
-		return WP_CLI::error( $message );
 	}
 
 }
