@@ -2,6 +2,12 @@
 
 set -e
 
+# Always land in the synced directory. Should we change the home directory instead?
+echo "cd /vagrant" >> ~/.bashrc
+
+# Map wp to wp-cli inside the container.
+echo "alias wp='docker-compose --file /vagrant/docker-compose.yml exec -T --user www-data phpfpm wp \"\${@:2}\"'" >> ~/.bashrc
+
 # Map binary name to source URL.
 REPOS=(
 	"docker-compose,https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m`"
