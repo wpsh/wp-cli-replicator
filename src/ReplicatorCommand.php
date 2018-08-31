@@ -115,7 +115,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 
 				$this->cli->success( sprintf(
 					'Parsed posts from %s to %s.',
-					dirname( $file ),
+					basename( $file ),
 					$posts_filename
 				) );
 			} else {
