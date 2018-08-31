@@ -15,6 +15,9 @@ sudo apt-get update
 sudo apt-get install -y \
 	docker-ce avahi-daemon
 
+# Ensure we can run docker commands without extra permissions.
+sudo usermod -a -G docker $USER
+
 # Install various binary scripts.
 for repo_set in "${REPOS[@]}"; do
 	while IFS=',' read -ra repo; do
