@@ -50,7 +50,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 	public function parse_wxr( $args, $assoc_args ) {
 		list( $xml_dir ) = $args;
 
-		$fresh = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'fresh' );
+		$fresh = (bool) Utils\get_flag_value( $assoc_args, 'fresh' );
 
 		$xml_dir = rtrim( $xml_dir, '/' );
 		$files = glob( $xml_dir . '/*.xml' );
@@ -220,7 +220,7 @@ class ReplicatorCommand extends WP_CLI_Command {
 				size_format( memory_get_peak_usage() )
 			) );
 
-			WP_CLI\Utils\wp_clear_object_cache();
+			Utils\wp_clear_object_cache();
 		}
 
 		$this->cli->success( 'All posts imported.' );
