@@ -4,6 +4,12 @@
 
 This command relies on writing directly to the WP database via WP DB API so both post and term tables should be empty.
 
+## Install
+
+Install it as a [WP CLI package](https://developer.wordpress.org/cli/commands/package/install/):
+
+    wp package install wpsh/wp-cli-replicator
+
 
 ## Usage
 
