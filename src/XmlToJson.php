@@ -112,7 +112,7 @@ class XmlToJson extends CliTool {
 	protected function escape_xml( $xml ) {
 		// Remove all invalid characters per XML spec:
 		// @see https://www.w3.org/TR/xml11/#charsets
-		$xml = preg_replace( '/[^\x9\xA\xB\xD\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]/u', ' ', $xml );
+		$xml = preg_replace( '/[^\x9\xa\x20-\xD7FF\xE000-\xFFFD]/', ' ', $xml );
 
 		// Escape XML entities.
 		// @todo Prevent from touching the CDATA content.
