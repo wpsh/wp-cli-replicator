@@ -1,6 +1,6 @@
 {
   "name": "wpsh/wp-cli-replicator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "homepage": "https://wpsh.org/wp-cli-replicator",
   "type": "wp-cli-package",
