@@ -1,2 +1,4 @@
+/.vagrant/
 /vendor/
+
 /composer.lock

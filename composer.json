@@ -30,11 +30,18 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.3",
     "phpcompatibility/php-compatibility": "^8.2",
-    "wp-coding-standards/wpcs": "^1.0"
+    "wp-coding-standards/wpcs": "^1.0",
+    "johnpbloch/wordpress": "^4.9"
   },
   "scripts": {
     "wpcs": [
       "vendor/bin/phpcs src"
+    ],
+    "wp": [
+      "./scripts/vagrant/wp-cli.sh"
     ]
+  },
+  "extra": {
+    "wordpress-install-dir": "docker/data/www/wp"
   }
 }
